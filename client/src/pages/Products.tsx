@@ -30,14 +30,13 @@ const Products = () => {
             if (category) params.set("category", category);
             if (organic) params.set("organic", organic);
             if (sort) params.set("sort", sort);
-            if (sort) params.set("sort", sort);
             if (maxPrice) params.set("maxPrice", maxPrice);
             params.set("page", String(page));
             params.set("limit", "12");
 
             const { data } = await api.get(`/products?${params.toString()}`);
-            setProducts(data.products);
-            setTotalPages(data.pages);
+            setProducts(data.products || []);
+            setTotalPages(data.pages || 1);
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message);
         } finally {
@@ -93,7 +92,7 @@ const Products = () => {
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h1 className="text-2xl font-semibold text-app-green">{activeCategory ? activeCategory.name : "All Products"}</h1>
-                                <p className="text-sm text-app-text-light mt-0.5">{products.length} products found</p>
+                                <p className="text-sm text-app-text-light mt-0.5">{products?.length || 0} products found</p>
                             </div>
 
                             <div className="flex flex-col lg:items-center gap-3">
@@ -119,7 +118,7 @@ const Products = () => {
                         {/* Product Grid */}
                         {loading ? (
                             <Loading />
-                        ) : products.length === 0 ? (
+                        ) : !products || products.length === 0 ? (
                             <div className="text-center py-16">
                                 <p className="text-lg font-semibold text-app-green mb-2">No products found</p>
                                 <p className="text-sm text-app-text-light mb-4">Try adjusting your filters or search terms</p>
