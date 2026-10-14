@@ -16,8 +16,12 @@ const app = express();
 
 app.post("/api/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
-// Middleware
-app.use(cors());
+// Middleware with specific frontend allowed for CORS
+app.use(cors({
+    origin: ["http://localhost:5173", "https://grocery-delivery-fullstack-6y1y.vercel.app"],
+    credentials: true
+}));
+
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
@@ -25,6 +29,7 @@ const port = process.env.PORT || 5000;
 app.get("/", (req: Request, res: Response) => {
     res.send("Server is Live!");
 });
+
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/upload", uploadRouter);
