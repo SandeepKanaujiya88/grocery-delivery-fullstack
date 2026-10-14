@@ -1,9 +1,16 @@
+
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.js";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL!,
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+    throw new Error("DATABASE_URL is missing in .env");
+}
+
+const adapter = new PrismaPg({
+    connectionString: databaseUrl,
 });
 
 export const prisma = new PrismaClient({ adapter });
