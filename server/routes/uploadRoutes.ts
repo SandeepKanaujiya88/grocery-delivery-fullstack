@@ -1,4 +1,3 @@
-
 import express from "express";
 import auth from "../middleware/auth.js";
 import multer from "multer";
@@ -12,9 +11,7 @@ const upload = multer({ storage });
 uploadRouter.post("/", auth, upload.single("image"), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({
-                message: "No image file provided"
-            });
+            return res.status(400).json({ message: "No image file provided" });
         }
 
         const b64 = Buffer.from(req.file.buffer).toString("base64");
@@ -26,13 +23,8 @@ uploadRouter.post("/", auth, upload.single("image"), async (req, res) => {
         });
 
         res.json({ url: result.secure_url });
-
     } catch (error: any) {
-        console.error("Cloudinary upload error:", error);
-
-        res.status(500).json({
-            message: error.message
-        });
+        res.status(500).json({ message: error.message });
     }
 });
 
