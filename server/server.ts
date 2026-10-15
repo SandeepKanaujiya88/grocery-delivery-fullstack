@@ -17,8 +17,22 @@ const app = express();
 app.post("/api/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
 // Middleware with specific frontend allowed for CORS
+// Middleware with dynamic CORS allowed for any Vercel preview/production or localhost
 app.use(cors({
-    origin: ["http://localhost:5173", "https://grocery-delivery-fullstack-6y1y.vercel.app"],
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, postman)
+        if (!origin) return callback(null, true);
+        
+        // Allow localhost and any Vercel deployment of your app
+        if (
+            origin.startsWith("http://localhost:") || 
+            origin.includes("vercel.app")
+        ) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
 
