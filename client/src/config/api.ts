@@ -1,15 +1,20 @@
+
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
+    baseURL:
+        import.meta.env.VITE_BASE_URL ||
+        "https://grocery-delivery-fullstack-yt6i.vercel.app/api",
 });
 
 // Inject JWT token from localStorage into every request
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("auth_token");
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
 });
 
@@ -20,11 +25,15 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             localStorage.removeItem("auth_token");
             localStorage.removeItem("auth_user");
-            // Only redirect if not already on auth pages
-            if (!window.location.pathname.includes("/login") && !window.location.pathname.includes("/register")) {
+
+            if (
+                !window.location.pathname.includes("/login") &&
+                !window.location.pathname.includes("/register")
+            ) {
                 window.location.href = "/login";
             }
         }
+
         return Promise.reject(error);
     }
 );
