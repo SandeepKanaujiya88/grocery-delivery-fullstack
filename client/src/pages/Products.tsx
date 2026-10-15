@@ -35,10 +35,11 @@ const Products = () => {
             params.set("limit", "12");
 
             const { data } = await api.get(`/products?${params.toString()}`);
-            setProducts(data.products || []);
-            setTotalPages(data.pages || 1);
+            setProducts(data?.products || []);
+            setTotalPages(data?.pages || 1);
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message);
+            setProducts([]);
         } finally {
             setLoading(false);
         }
@@ -127,7 +128,9 @@ const Products = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8">{products.map((product) => product.stock > 0 && <ProductCard key={product.id} product={product} />)}</div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8">
+                                {products?.map((product) => product?.stock > 0 && <ProductCard key={product.id} product={product} />)}
+                            </div>
                         )}
 
                         {/* Pagination */}
