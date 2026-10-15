@@ -7,7 +7,7 @@
     "postinstall": "npx prisma generate",
     "start": "tsx server.ts",
     "server": "nodemon --exec tsx server.ts",
-    "build": "echo 'Skipping custom build for tsx server'",
+    "build": "tsc",
     "seed": "tsx seed.ts"
   },
   "keywords": [],
