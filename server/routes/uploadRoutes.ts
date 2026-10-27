@@ -1,4 +1,3 @@
-
 import express from "express";
 import auth from "../middleware/auth.js";
 import multer from "multer";
@@ -20,10 +19,15 @@ uploadRouter.post("/", auth, upload.single("image"), async (req, res) => {
         const b64 = Buffer.from(req.file.buffer).toString("base64");
         const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
 
-        const result = await cloudinary.uploader.upload(dataURI, {
-            folder: "grocery-del",
-            resource_type: "auto",
-        });
+        // Yahan 'ml_default' use kar rahe hain jo Cloudinary me already unsigned hai
+        const result = await cloudinary.uploader.unsigned_upload(
+            dataURI,
+            "ml_default",
+            {
+                folder: "grocery-del",
+                resource_type: "auto",
+            }
+        );
 
         res.json({
             url: result.secure_url
