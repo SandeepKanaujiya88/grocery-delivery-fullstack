@@ -25,18 +25,18 @@ uploadRouter.post("/", auth, upload.single("image"), async (req, res) => {
             resource_type: "auto",
         });
 
-        res.json({ url: result.secure_url });
-
-    } catch (error: any) {
-        console.error("Cloudinary upload error:", {
-            message: error?.message,
-            http_code: error?.http_code,
-            name: error?.name,
-            cloudinaryMessage: error?.error?.message,
+        res.json({
+            url: result.secure_url
         });
 
+    } catch (error: any) {
+        console.error("Cloudinary upload error details:", error);
+
         res.status(500).json({
-            message: error?.error?.message || error?.message || "Upload failed"
+            message:
+                error?.error?.message ||
+                error?.message ||
+                "Upload failed"
         });
     }
 });
